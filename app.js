@@ -3,11 +3,11 @@
 
   // ----- Config -----
   const FRAME_SRC = 'assets/frame.png';
-  const OUTPUT_W = 1060;
-  const OUTPUT_H = 1484;
-  const COUNTDOWN_FROM = 3;
+  const OUTPUT_W = 1038;
+  const OUTPUT_H = 1515;
+  const COUNTDOWN_FROM = 3; // unused now (capture is instant) — kept in case countdown is wanted back
   // Photo window bounding box — must match assets/frame.png exactly.
-  const WINDOW = { x: 149, y: 288, w: 755, h: 956 };
+  const WINDOW = { x: 136, y: 300, w: 755, h: 991 };
 
   // ----- Elements -----
   const video = document.getElementById('video');
@@ -87,43 +87,16 @@
     startCamera(facingMode);
   });
 
-  // ----- Countdown + capture -----
-  captureBtn.addEventListener('click', async () => {
+  // ----- Capture (instant, no countdown) -----
+  captureBtn.addEventListener('click', () => {
     if (isCapturing) return;
     isCapturing = true;
     captureBtn.disabled = true;
-    await runCountdown(COUNTDOWN_FROM);
     composite();
     isCapturing = false;
     captureBtn.disabled = false;
     showScreen('result');
   });
-
-  function runCountdown(from) {
-    return new Promise((resolve) => {
-      let n = from;
-      countdownEl.textContent = n;
-      countdownEl.classList.remove('show');
-      void countdownEl.offsetWidth; // restart animation
-      countdownEl.classList.add('show');
-
-      const tick = () => {
-        n -= 1;
-        if (n <= 0) {
-          countdownEl.classList.remove('show');
-          resolve();
-          return;
-        }
-        countdownEl.textContent = n;
-        countdownEl.classList.remove('show');
-        void countdownEl.offsetWidth;
-        countdownEl.classList.add('show');
-        setTimeout(tick, 1000);
-      };
-      setTimeout(tick, 1000);
-    });
-  }
-
   // ----- Composite photo + frame -----
   function composite() {
     workCanvas.width = OUTPUT_W;
